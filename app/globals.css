@@ -1,26 +1,218 @@
 @import "tailwindcss";
 
+/* ============================================================
+   GREEN LOGISTICS RWANDA — Design System (Tailwind v4)
+   Brand: GREEN primary · white · ink-black
+   ============================================================ */
+
+@theme {
+  /* Brand greens */
+  --color-brand: #0b6e4f; /* primary emerald */
+  --color-brand-dark: #064e32; /* deep forest */
+  --color-brand-ink: #0a1410; /* near-black green (dark sections) */
+  --color-brand-bright: #16a34a; /* vivid CTA green */
+  --color-brand-glow: #34d399; /* accent glow / highlights */
+  --color-brand-mist: #e6f4ec; /* pale green wash */
+
+  /* Neutrals */
+  --color-paper: #f5f9f6; /* off-white background */
+  --color-ink: #0a0f0d; /* true text black */
+  --color-ash: #5b6b63; /* muted green-gray text */
+  --color-line: #dfe8e2; /* hairline borders */
+
+  /* Fonts (wired in layout.tsx via next/font) */
+  --font-display: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+
+  /* Motion */
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Container */
+  --breakpoint-3xl: 1600px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --shadow-soft: 0 1px 2px rgba(6, 78, 50, 0.04), 0 8px 24px -8px rgba(6, 78, 50, 0.12);
+  --shadow-lift: 0 2px 4px rgba(6, 78, 50, 0.05), 0 18px 48px -12px rgba(6, 78, 50, 0.22);
+  --shadow-glow: 0 0 0 1px rgba(52, 211, 153, 0.18), 0 20px 60px -18px rgba(11, 110, 79, 0.45);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  border-color: var(--color-line);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-brand-glow);
+  color: var(--color-brand-ink);
+}
+
+/* Headings */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+/* Accessible focus rings everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-brand-bright);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- Utility layer ---------- */
+@layer utilities {
+  /* subtle film grain for depth */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* layered radial green mesh */
+  .mesh-green {
+    background-color: var(--color-brand-ink);
+    background-image:
+      radial-gradient(60% 50% at 15% 0%, rgba(22, 163, 74, 0.22), transparent 60%),
+      radial-gradient(50% 45% at 100% 20%, rgba(52, 211, 153, 0.16), transparent 55%),
+      radial-gradient(45% 60% at 80% 100%, rgba(11, 110, 79, 0.3), transparent 60%);
+  }
+
+  .mesh-light {
+    background-color: var(--color-paper);
+    background-image:
+      radial-gradient(50% 40% at 100% 0%, rgba(52, 211, 153, 0.12), transparent 60%),
+      radial-gradient(45% 45% at 0% 100%, rgba(11, 110, 79, 0.08), transparent 60%);
+  }
+
+  /* frosted glass card */
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .glass-light {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(11, 110, 79, 0.1);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-lift {
+    box-shadow: var(--shadow-lift);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* gradient text */
+  .text-grad-green {
+    background: linear-gradient(120deg, var(--color-brand-glow), #a7f3d0 60%, #ffffff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* ---------- Keyframe animations ---------- */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 38s linear infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2.4s var(--ease-spring) infinite;
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.animate-float {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-marquee,
+  .animate-float,
+  .animate-pulse-ring {
+    animation: none !important;
+  }
 }
