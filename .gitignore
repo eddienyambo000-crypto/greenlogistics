@@ -28,6 +28,9 @@
 /shots
 dev.log
 probe.mjs
+setup-test.mjs
+verify-final.mjs
+admin-shot.mjs
 
 # debug
 npm-debug.log*
