@@ -71,6 +71,22 @@ export async function updateQuoteStatus(id: string, status: QuoteStatus) {
   revalidatePath("/admin");
 }
 
+export async function saveSetting(key: string, value: string | null) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("site_settings")
+    .upsert(
+      { key, value: value || null, updated_at: new Date().toISOString() },
+      { onConflict: "key" },
+    );
+  if (error) return { ok: false, message: error.message };
+  // Refresh everywhere this content can appear.
+  for (const p of ["/", "/services", "/about", "/contact", "/admin"]) {
+    revalidatePath(p);
+  }
+  return { ok: true, message: "Saved." };
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();

@@ -3,7 +3,9 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import Icon from "@/components/Icon";
+import SlotImage from "@/components/SlotImage";
 import { Reveal } from "@/components/Reveal";
+import { getSettings } from "@/lib/settings";
 import { SERVICES, whatsappLink } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -21,7 +23,8 @@ const HIGHLIGHTS: Record<string, string[]> = {
   distribution: ["Last-mile speed", "Accuracy first", "Customer-ready"],
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const settings = await getSettings();
   return (
     <>
       <PageHero
@@ -46,18 +49,25 @@ export default function ServicesPage() {
                     className={`relative ${flip ? "lg:order-2" : ""}`}
                   >
                     <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-line bg-brand-ink shadow-lift">
-                      {/* IMAGE PLACEHOLDER per service */}
-                      <div className="mesh-green grain absolute inset-0" />
-                      <div className="absolute inset-0 grid place-items-center">
-                        <Icon
-                          name={s.icon}
-                          className="h-16 w-16 text-white/80"
-                          strokeWidth={1.3}
-                        />
-                      </div>
-                      <span className="absolute left-5 top-5 font-mono text-xs text-white/50">
-                        {String(i + 1).padStart(2, "0")} / image
-                      </span>
+                      <SlotImage
+                        src={settings[`img_service_${s.key}`]}
+                        alt={s.title}
+                        fallback={
+                          <>
+                            <div className="mesh-green grain absolute inset-0" />
+                            <div className="absolute inset-0 grid place-items-center">
+                              <Icon
+                                name={s.icon}
+                                className="h-16 w-16 text-white/80"
+                                strokeWidth={1.3}
+                              />
+                            </div>
+                            <span className="absolute left-5 top-5 font-mono text-xs text-white/50">
+                              {String(i + 1).padStart(2, "0")} / image
+                            </span>
+                          </>
+                        }
+                      />
                     </div>
                   </div>
 

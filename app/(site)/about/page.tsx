@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Target, Eye, MapPin, Heart, ShieldCheck, Zap, Users } from "lucide-react";
 import PageHero from "@/components/PageHero";
+import SlotImage from "@/components/SlotImage";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
+import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "About",
@@ -19,7 +21,8 @@ const VALUES = [
 
 const TEAM = ["Operations Lead", "Customs Specialist", "Fleet Manager", "Client Success"];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getSettings();
   return (
     <>
       <PageHero
@@ -34,18 +37,26 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line bg-brand-ink shadow-lift">
-              <div className="mesh-green grain absolute inset-0" />
-              <div className="absolute inset-0 grid place-items-center text-center">
-                <div>
-                  <MapPin className="mx-auto h-10 w-10 text-brand-glow" />
-                  <p className="mt-3 font-display text-xl font-bold text-white">
-                    Our operations
-                  </p>
-                  <p className="mt-1 text-sm text-white/50">
-                    Image placeholder · team / facility
-                  </p>
-                </div>
-              </div>
+              <SlotImage
+                src={settings.img_about_story}
+                alt="Green Logistics Rwanda operations"
+                fallback={
+                  <>
+                    <div className="mesh-green grain absolute inset-0" />
+                    <div className="absolute inset-0 grid place-items-center text-center">
+                      <div>
+                        <MapPin className="mx-auto h-10 w-10 text-brand-glow" />
+                        <p className="mt-3 font-display text-xl font-bold text-white">
+                          Our operations
+                        </p>
+                        <p className="mt-1 text-sm text-white/50">
+                          Image placeholder · team / facility
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                }
+              />
             </div>
           </Reveal>
 
@@ -193,25 +204,38 @@ export default function AboutPage() {
             </p>
           </Reveal>
           <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {TEAM.map((role, i) => (
-              <RevealItem key={role}>
-                <div className="overflow-hidden rounded-2xl border border-line bg-paper shadow-soft">
-                  <div className="relative aspect-square bg-brand-ink">
-                    <div className="mesh-green grain absolute inset-0" />
-                    <div className="absolute inset-0 grid place-items-center">
-                      <Users className="h-10 w-10 text-white/60" />
+            {TEAM.map((role, i) => {
+              const n = i + 1;
+              const name = settings[`team_${n}_name`] || "Team Member";
+              const roleText = settings[`team_${n}_role`] || role;
+              return (
+                <RevealItem key={n}>
+                  <div className="overflow-hidden rounded-2xl border border-line bg-paper shadow-soft">
+                    <div className="relative aspect-square bg-brand-ink">
+                      <SlotImage
+                        src={settings[`team_${n}`]}
+                        alt={name}
+                        fallback={
+                          <>
+                            <div className="mesh-green grain absolute inset-0" />
+                            <div className="absolute inset-0 grid place-items-center">
+                              <Users className="h-10 w-10 text-white/60" />
+                            </div>
+                            <span className="absolute bottom-3 right-3 font-mono text-[10px] text-white/40">
+                              photo {n}
+                            </span>
+                          </>
+                        }
+                      />
                     </div>
-                    <span className="absolute bottom-3 right-3 font-mono text-[10px] text-white/40">
-                      photo {i + 1}
-                    </span>
+                    <div className="p-5">
+                      <p className="font-display font-bold text-ink">{name}</p>
+                      <p className="text-sm text-brand">{roleText}</p>
+                    </div>
                   </div>
-                  <div className="p-5">
-                    <p className="font-display font-bold text-ink">Team Member</p>
-                    <p className="text-sm text-brand">{role}</p>
-                  </div>
-                </div>
-              </RevealItem>
-            ))}
+                </RevealItem>
+              );
+            })}
           </RevealGroup>
 
           <Reveal>

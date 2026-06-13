@@ -3,24 +3,30 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight, Search, ShieldCheck, MapPin } from "lucide-react";
-import { SITE, whatsappLink } from "@/lib/site";
+import { whatsappLink } from "@/lib/site";
 
 const headline = ["Rwanda's", "Goods,", "Moving", "Faster."];
 
-export default function Hero() {
+export default function Hero({
+  videoUrl,
+  posterUrl,
+}: {
+  videoUrl?: string;
+  posterUrl?: string;
+}) {
   return (
     <section className="mesh-green grain relative flex min-h-dvh items-center overflow-hidden pt-[68px] text-white">
-      {/* Optional video — drop a file at /public/video/hero.mp4 and it covers the mesh */}
+      {/* Video set from the admin panel (or /public/video/hero.mp4) — covers the mesh */}
       <video
         className="absolute inset-0 z-0 h-full w-full object-cover opacity-50"
         autoPlay
         muted
         loop
         playsInline
-        poster="/placeholders/hero-poster.jpg"
+        poster={posterUrl || "/placeholders/hero-poster.jpg"}
         aria-hidden
       >
-        <source src="/video/hero.mp4" type="video/mp4" />
+        <source src={videoUrl || "/video/hero.mp4"} type="video/mp4" />
       </video>
 
       {/* Legibility overlay */}

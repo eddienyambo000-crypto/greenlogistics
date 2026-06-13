@@ -8,11 +8,13 @@ export default function StatCounter({
   suffix = "",
   prefix = "",
   label,
+  tone = "dark",
 }: {
   value: number;
   suffix?: string;
   prefix?: string;
   label: string;
+  tone?: "dark" | "light";
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -40,12 +42,20 @@ export default function StatCounter({
 
   return (
     <div ref={ref}>
-      <div className="font-display text-4xl font-bold text-brand sm:text-5xl">
+      <div
+        className={`font-display text-4xl font-bold sm:text-5xl ${
+          tone === "light" ? "text-white" : "text-brand"
+        }`}
+      >
         {prefix}
         {n.toLocaleString()}
         {suffix}
       </div>
-      <div className="mt-2 text-sm text-ash">{label}</div>
+      <div
+        className={`mt-2 text-sm ${tone === "light" ? "text-white/60" : "text-ash"}`}
+      >
+        {label}
+      </div>
     </div>
   );
 }

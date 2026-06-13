@@ -5,6 +5,9 @@ import Logo from "@/components/Logo";
 import SignOutButton from "@/components/admin/SignOutButton";
 import ShipmentsPanel from "@/components/admin/ShipmentsPanel";
 import QuotesPanel from "@/components/admin/QuotesPanel";
+import ContentPanel from "@/components/admin/ContentPanel";
+import AdminTabs from "@/components/admin/AdminTabs";
+import { getSettings } from "@/lib/settings";
 import type { Shipment, Quote } from "@/lib/db-types";
 
 export const dynamic = "force-dynamic";
@@ -32,9 +35,10 @@ export default async function AdminPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: shipments }, { data: quotes }] = await Promise.all([
+  const [{ data: shipments }, { data: quotes }, settings] = await Promise.all([
     supabase.from("shipments").select("*").order("created_at", { ascending: false }),
     supabase.from("quotes").select("*").order("created_at", { ascending: false }),
+    getSettings(),
   ]);
 
   const ships = (shipments ?? []) as Shipment[];
@@ -102,15 +106,15 @@ export default async function AdminPage() {
           ))}
         </div>
 
-        {/* Shipments */}
-        <div className="mt-10">
-          <ShipmentsPanel shipments={ships} />
-        </div>
-
-        {/* Quotes */}
-        <div className="mt-10">
-          <QuotesPanel quotes={leads} />
-        </div>
+        <AdminTabs
+          operations={
+            <div className="space-y-10">
+              <ShipmentsPanel shipments={ships} />
+              <QuotesPanel quotes={leads} />
+            </div>
+          }
+          content={<ContentPanel settings={settings} />}
+        />
       </main>
     </div>
   );

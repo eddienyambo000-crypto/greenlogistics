@@ -53,6 +53,10 @@ npm run dev      # http://localhost:3000
 5. On the public site, submit the **Contact → Request a quote** form → it lands
    in the **Quote requests** panel in `/admin` **and** emails the inbox via
    Formspree (`xwvjwgrj`).
+6. In `/admin` → **Site content** tab → upload the hero video and any images,
+   or edit the stats/testimonial → they update on the live site instantly. No
+   code needed. (Files are stored in the Supabase `media` bucket, created by
+   the schema.)
 
 ---
 

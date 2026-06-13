@@ -177,6 +177,66 @@ $$;
 revoke all on function get_shipment_by_tracking(text) from public;
 grant execute on function get_shipment_by_tracking(text) to anon, authenticated;
 
+-- ============================================================
+-- SITE CONTENT CMS — editable media + text from the admin panel
+-- ============================================================
+
+-- Key/value store: media URLs (hero_video, service_customs, team_1…) and
+-- editable text (stat_1_value, testimonial_quote…). value is null until set.
+create table if not exists site_settings (
+  key        text primary key,
+  value      text,
+  updated_at timestamptz not null default now()
+);
+
+alter table site_settings enable row level security;
+
+-- Anyone can READ settings (the public pages render them).
+drop policy if exists "public read settings" on site_settings;
+create policy "public read settings" on site_settings
+  for select to anon, authenticated using (true);
+
+-- Only staff can change them.
+drop policy if exists "staff write settings" on site_settings;
+create policy "staff write settings" on site_settings
+  for all to authenticated using (true) with check (true);
+
+-- Seed the known slots (value left null → page shows placeholder).
+insert into site_settings (key) values
+  ('hero_video'), ('hero_poster'),
+  ('img_why_magerwa'), ('img_about_story'),
+  ('img_service_custom'), ('img_service_customs'), ('img_service_door'),
+  ('img_service_warehousing'), ('img_service_transport'), ('img_service_distribution'),
+  ('team_1'), ('team_2'), ('team_3'), ('team_4'),
+  ('team_1_name'), ('team_1_role'), ('team_2_name'), ('team_2_role'),
+  ('team_3_name'), ('team_3_role'), ('team_4_name'), ('team_4_role'),
+  ('stat_1_value'), ('stat_1_label'), ('stat_2_value'), ('stat_2_label'),
+  ('stat_3_value'), ('stat_3_label'), ('stat_4_value'), ('stat_4_label'),
+  ('testimonial_quote'), ('testimonial_author')
+on conflict (key) do nothing;
+
+-- ---------- Storage bucket for uploaded media ----------
+insert into storage.buckets (id, name, public)
+values ('media', 'media', true)
+on conflict (id) do nothing;
+
+-- Public can read files; only staff can upload/replace/delete.
+drop policy if exists "public read media" on storage.objects;
+create policy "public read media" on storage.objects
+  for select to anon, authenticated using (bucket_id = 'media');
+
+drop policy if exists "staff upload media" on storage.objects;
+create policy "staff upload media" on storage.objects
+  for insert to authenticated with check (bucket_id = 'media');
+
+drop policy if exists "staff update media" on storage.objects;
+create policy "staff update media" on storage.objects
+  for update to authenticated using (bucket_id = 'media');
+
+drop policy if exists "staff delete media" on storage.objects;
+create policy "staff delete media" on storage.objects
+  for delete to authenticated using (bucket_id = 'media');
+
 -- ---------- Optional seed (handy for demos; delete anytime) ----------
 -- insert into shipments (status, service, origin, destination, cargo_type,
 --   weight_kg, receiver_name, current_location, estimated_delivery, notes)

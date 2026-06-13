@@ -1,8 +1,14 @@
 # Image & Video Placeholders
 
 Every visual slot uses a branded green placeholder so the site looks finished
-today. Replace them with real assets when available. Drop files into
-`/public/...` and update the matching component.
+today.
+
+## ✅ Easiest way: upload from the admin panel (no code)
+Once Supabase is connected, sign in at `/admin` → **Site content** tab. Every
+slot below (hero video, section/service/team images, stats, testimonial) has an
+**Upload / Replace** button. Files go to Supabase Storage and appear on the live
+site instantly. This is the recommended path — the tables below are just the
+reference of what each slot is.
 
 ## Hero video (highest impact)
 - **Slot:** full-screen background on the home hero.

@@ -12,7 +12,9 @@ import Hero from "@/components/home/Hero";
 import Marquee from "@/components/home/Marquee";
 import StatCounter from "@/components/home/StatCounter";
 import ServiceCard from "@/components/ServiceCard";
+import SlotImage from "@/components/SlotImage";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
+import { getSettings } from "@/lib/settings";
 import { SITE, SERVICES, whatsappLink } from "@/lib/site";
 
 const PROCESS = [
@@ -38,6 +40,13 @@ const PROCESS = [
   },
 ];
 
+const STAT_DEFAULTS = [
+  { value: 500, suffix: "+", label: "Shipments delivered" },
+  { value: 99, suffix: "%", label: "On-time delivery" },
+  { value: 24, suffix: "/7", label: "Cargo monitoring" },
+  { value: 50, suffix: "+", label: "Businesses served" },
+];
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "MovingCompany",
@@ -57,7 +66,9 @@ const jsonLd = {
   openingHours: "Mo-Sa 08:00-18:00",
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const settings = await getSettings();
+  const statsCustomized = [1, 2, 3, 4].some((n) => settings[`stat_${n}_value`]);
   return (
     <>
       <script
@@ -65,7 +76,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Hero />
+      <Hero videoUrl={settings.hero_video} posterUrl={settings.hero_poster} />
       <Marquee />
 
       {/* ---------------- Services ---------------- */}
@@ -104,19 +115,28 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-brand-ink shadow-lift">
-              {/* IMAGE PLACEHOLDER: Magerwa hub / warehouse exterior */}
-              <div className="mesh-green grain absolute inset-0" />
-              <div className="absolute inset-0 grid place-items-center text-center">
-                <div className="px-6">
-                  <MapPin className="mx-auto h-10 w-10 text-brand-glow" />
-                  <p className="mt-3 font-display text-2xl font-bold text-white">
-                    Magerwa, Kigali
-                  </p>
-                  <p className="mt-1 text-sm text-white/55">
-                    Image placeholder · facility / fleet photo
-                  </p>
-                </div>
-              </div>
+              <SlotImage
+                src={settings.img_why_magerwa}
+                alt="Green Logistics facility in Magerwa, Kigali"
+                fallback={
+                  <>
+                    <div className="mesh-green grain absolute inset-0" />
+                    <div className="absolute inset-0 grid place-items-center text-center">
+                      <div className="px-6">
+                        <MapPin className="mx-auto h-10 w-10 text-brand-glow" />
+                        <p className="mt-3 font-display text-2xl font-bold text-white">
+                          Magerwa, Kigali
+                        </p>
+                        <p className="mt-1 text-sm text-white/55">
+                          Image placeholder · facility / fleet photo
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                }
+              />
+              {/* gradient so the floating card stays legible over a photo */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-ink/60 to-transparent" />
               {/* floating stat card */}
               <div className="glass absolute bottom-5 left-5 rounded-2xl px-5 py-4 text-white">
                 <p className="font-display text-2xl font-bold">Crossroads</p>
@@ -217,16 +237,34 @@ export default function HomePage() {
             </h2>
           </Reveal>
           <div className="mt-12 grid grid-cols-2 gap-8 rounded-3xl border border-white/10 bg-white/[0.03] p-8 sm:p-10 lg:grid-cols-4">
-            {/* Stats are placeholders — confirm real numbers with client */}
-            <StatCounter value={500} suffix="+" label="Shipments delivered" />
-            <StatCounter value={99} suffix="%" label="On-time delivery" />
-            <StatCounter value={24} suffix="/7" label="Cargo monitoring" />
-            <StatCounter value={50} suffix="+" label="Businesses served" />
+            {STAT_DEFAULTS.map((stat, i) => {
+              const n = i + 1;
+              const v = settings[`stat_${n}_value`];
+              const label = settings[`stat_${n}_label`] || stat.label;
+              return v ? (
+                <div key={n}>
+                  <div className="font-display text-4xl font-bold text-white sm:text-5xl">
+                    {v}
+                  </div>
+                  <div className="mt-2 text-sm text-white/60">{label}</div>
+                </div>
+              ) : (
+                <StatCounter
+                  key={n}
+                  value={stat.value}
+                  suffix={stat.suffix}
+                  label={label}
+                  tone="light"
+                />
+              );
+            })}
           </div>
-          <p className="mt-4 font-mono text-[11px] text-white/40">
-            * Figures shown are placeholders — to be replaced with verified
-            numbers.
-          </p>
+          {!statsCustomized && (
+            <p className="mt-4 font-mono text-[11px] text-white/40">
+              * Figures shown are placeholders — editable anytime from the admin
+              panel.
+            </p>
+          )}
         </div>
       </section>
 
@@ -260,17 +298,18 @@ export default function HomePage() {
             </Reveal>
           </div>
 
-          {/* testimonial placeholder */}
+          {/* testimonial (editable from admin) */}
           <Reveal delay={0.05}>
             <figure className="mt-6 rounded-3xl border border-line bg-paper p-9 shadow-soft">
               <Quote className="h-8 w-8 text-brand/30" />
               <blockquote className="font-display mt-4 max-w-3xl text-xl font-medium leading-relaxed text-ink sm:text-2xl">
-                “Placeholder for a client testimonial — swap in a real quote
-                once Green Logistics shares one. This builds instant trust right
-                where buyers decide.”
+                “
+                {settings.testimonial_quote ||
+                  "Placeholder for a client testimonial — add a real quote from the admin panel. This builds instant trust right where buyers decide."}
+                ”
               </blockquote>
               <figcaption className="mt-5 text-sm text-ash">
-                — Client name, Company · <span className="text-brand">Kigali</span>
+                — {settings.testimonial_author || "Client name, Company · Kigali"}
               </figcaption>
             </figure>
           </Reveal>
