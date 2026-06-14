@@ -251,6 +251,21 @@ export default function ContentPanel({ settings }: { settings: Settings }) {
         </p>
       </div>
 
+      <Group title="Brand">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <MediaSlot
+            slotKey="logo"
+            label="Logo (transparent PNG/SVG)"
+            kind="image"
+            current={settings.logo}
+          />
+        </div>
+        <p className="mt-2 text-xs text-white/40">
+          Best as a transparent-background PNG or SVG, roughly 400×120. Leave
+          empty to use the built-in text logo.
+        </p>
+      </Group>
+
       <Group title="Hero">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <MediaSlot

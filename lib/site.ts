@@ -6,6 +6,8 @@ export const SITE = {
   domain: "https://greenlogisticsrwanda.com",
   phone: "+250 788 955 714",
   phoneRaw: "250788955714",
+  whatsapp: "+250 788 279 643",
+  whatsappRaw: "250788279643",
   email: "greenlogisticsrwanda@gmail.com",
   address: "Magerwa, Kigali, Rwanda",
   hours: "Mon–Sat: 8:00 AM – 6:00 PM",
@@ -19,7 +21,7 @@ export const SITE = {
 } as const;
 
 export const whatsappLink = (msg: string = SITE.whatsappMsg) =>
-  `https://wa.me/${SITE.phoneRaw}?text=${encodeURIComponent(msg)}`;
+  `https://wa.me/${SITE.whatsappRaw}?text=${encodeURIComponent(msg)}`;
 
 export const NAV = [
   { label: "Home", href: "/" },

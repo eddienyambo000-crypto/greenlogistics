@@ -3,7 +3,7 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import Logo from "./Logo";
 import { NAV, SITE, SERVICES, whatsappLink } from "@/lib/site";
 
-export default function Footer() {
+export default function Footer({ logo }: { logo?: string }) {
   return (
     <footer className="mesh-green grain relative overflow-hidden text-white">
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8">
@@ -40,7 +40,7 @@ export default function Footer() {
         {/* Columns */}
         <div className="grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <Logo variant="light" />
+            <Logo variant="light" src={logo} />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
               Premier logistics from the heart of Magerwa — moving Rwanda&apos;s
               goods with precision, professionalism, and care.

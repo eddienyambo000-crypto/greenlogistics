@@ -1,18 +1,39 @@
 import Link from "next/link";
 
 /**
- * Brand lockup. No client logo file yet — this is a clean custom mark:
- * a leaf formed from a route/arrow, in brand green. Swap for client PNG later.
+ * Brand lockup. Shows the uploaded logo image when `src` is provided
+ * (admin → Site content → Brand, or /public/logo.png). Otherwise falls back to
+ * the custom text mark so the header never looks empty.
  */
 export default function Logo({
   variant = "dark",
   className = "",
+  src,
 }: {
   variant?: "dark" | "light";
   className?: string;
+  src?: string;
 }) {
   const text = variant === "light" ? "text-white" : "text-ink";
   const sub = variant === "light" ? "text-white/55" : "text-ash";
+
+  if (src) {
+    return (
+      <Link
+        href="/"
+        aria-label="Green Logistics Rwanda — home"
+        className={`group inline-flex items-center ${className}`}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt="Green Logistics Rwanda"
+          className="h-9 w-auto max-w-[180px] object-contain transition-transform duration-300 group-hover:scale-[1.03] sm:h-10"
+        />
+      </Link>
+    );
+  }
+
   return (
     <Link
       href="/"

@@ -8,7 +8,7 @@ import { Menu, X, Phone } from "lucide-react";
 import Logo from "./Logo";
 import { NAV, SITE } from "@/lib/site";
 
-export default function Navbar() {
+export default function Navbar({ logo }: { logo?: string }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -47,7 +47,7 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-5 sm:px-8">
-        <Logo variant={solid ? "dark" : "light"} />
+        <Logo variant={solid ? "dark" : "light"} src={logo} />
 
         {/* Desktop nav */}
         <ul className="hidden items-center gap-1 lg:flex">
