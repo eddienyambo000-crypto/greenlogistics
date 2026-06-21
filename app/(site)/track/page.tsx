@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Track Your Shipment",
   description:
     "Track your Green Logistics Rwanda shipment in real time. Enter your tracking number for live status and delivery updates.",
+  alternates: { canonical: "/track" },
 };
 
 export default function TrackPage() {

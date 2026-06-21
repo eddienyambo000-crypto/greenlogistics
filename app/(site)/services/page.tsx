@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Services",
   description:
     "Customs clearance, door-to-door, warehousing & storage, cargo transportation, distribution and custom logistics solutions across Rwanda.",
+  alternates: { canonical: "/services" },
 };
 
 const HIGHLIGHTS: Record<string, string[]> = {
@@ -63,7 +64,7 @@ export default async function ServicesPage() {
                               />
                             </div>
                             <span className="absolute left-5 top-5 font-mono text-xs text-white/50">
-                              {String(i + 1).padStart(2, "0")} / image
+                              {String(i + 1).padStart(2, "0")}
                             </span>
                           </>
                         }

@@ -14,7 +14,13 @@ import StatCounter from "@/components/home/StatCounter";
 import ServiceCard from "@/components/ServiceCard";
 import SlotImage from "@/components/SlotImage";
 import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
+import JsonLd from "@/components/JsonLd";
 import { getSettings } from "@/lib/settings";
+import {
+  organizationSchema,
+  websiteSchema,
+  localBusinessSchema,
+} from "@/lib/schema";
 import { SITE, SERVICES, whatsappLink } from "@/lib/site";
 
 const PROCESS = [
@@ -47,33 +53,12 @@ const STAT_DEFAULTS = [
   { value: 50, suffix: "+", label: "Businesses served" },
 ];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "MovingCompany",
-  name: SITE.name,
-  description:
-    "Premier logistics company in Magerwa, Kigali offering customs clearance, cargo transport, warehousing, door-to-door and distribution across Rwanda.",
-  url: SITE.domain,
-  telephone: SITE.phone,
-  email: SITE.email,
-  areaServed: "Rwanda",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "Magerwa",
-    addressLocality: "Kigali",
-    addressCountry: "RW",
-  },
-  openingHours: "Mo-Sa 08:00-18:00",
-};
-
 export default async function HomePage() {
   const settings = await getSettings();
-  const statsCustomized = [1, 2, 3, 4].some((n) => settings[`stat_${n}_value`]);
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      <JsonLd
+        data={[organizationSchema(), websiteSchema(), localBusinessSchema()]}
       />
 
       <Hero videoUrl={settings.hero_video} posterUrl={settings.hero_poster} />
@@ -128,7 +113,7 @@ export default async function HomePage() {
                           Magerwa, Kigali
                         </p>
                         <p className="mt-1 text-sm text-white/55">
-                          Image placeholder · facility / fleet photo
+                          Rwanda&apos;s import &amp; export hub
                         </p>
                       </div>
                     </div>
@@ -259,12 +244,6 @@ export default async function HomePage() {
               );
             })}
           </div>
-          {!statsCustomized && (
-            <p className="mt-4 font-mono text-[11px] text-white/40">
-              * Figures shown are placeholders — editable anytime from the admin
-              panel.
-            </p>
-          )}
         </div>
       </section>
 
@@ -298,21 +277,22 @@ export default async function HomePage() {
             </Reveal>
           </div>
 
-          {/* testimonial (editable from admin) */}
-          <Reveal delay={0.05}>
-            <figure className="mt-6 rounded-3xl border border-line bg-paper p-9 shadow-soft">
-              <Quote className="h-8 w-8 text-brand/30" />
-              <blockquote className="font-display mt-4 max-w-3xl text-xl font-medium leading-relaxed text-ink sm:text-2xl">
-                “
-                {settings.testimonial_quote ||
-                  "Placeholder for a client testimonial — add a real quote from the admin panel. This builds instant trust right where buyers decide."}
-                ”
-              </blockquote>
-              <figcaption className="mt-5 text-sm text-ash">
-                — {settings.testimonial_author || "Client name, Company · Kigali"}
-              </figcaption>
-            </figure>
-          </Reveal>
+          {/* testimonial — only shown once a real one is set in admin */}
+          {settings.testimonial_quote && (
+            <Reveal delay={0.05}>
+              <figure className="mt-6 rounded-3xl border border-line bg-paper p-9 shadow-soft">
+                <Quote className="h-8 w-8 text-brand/30" />
+                <blockquote className="font-display mt-4 max-w-3xl text-xl font-medium leading-relaxed text-ink sm:text-2xl">
+                  “{settings.testimonial_quote}”
+                </blockquote>
+                {settings.testimonial_author && (
+                  <figcaption className="mt-5 text-sm text-ash">
+                    — {settings.testimonial_author}
+                  </figcaption>
+                )}
+              </figure>
+            </Reveal>
+          )}
         </div>
       </section>
 

@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Contact & Quote",
   description:
     "Request a logistics quote from Green Logistics Rwanda. Call, email, or WhatsApp us — based in Magerwa, Kigali. Mon–Sat 8AM–6PM.",
+  alternates: { canonical: "/contact" },
 };
 
 export default async function ContactPage({
@@ -94,20 +95,15 @@ export default async function ContactPage({
               Chat with us on WhatsApp
             </a>
 
-            {/* Map placeholder */}
-            <div className="mt-4 relative aspect-[16/10] overflow-hidden rounded-2xl border border-line bg-brand-ink shadow-soft">
-              <div className="mesh-green grain absolute inset-0" />
-              <div className="absolute inset-0 grid place-items-center text-center">
-                <div>
-                  <MapPin className="mx-auto h-9 w-9 text-brand-glow" />
-                  <p className="mt-2 font-display font-bold text-white">
-                    Magerwa, Kigali
-                  </p>
-                  <p className="text-xs text-white/50">
-                    Map embed placeholder
-                  </p>
-                </div>
-              </div>
+            {/* Live map — Magerwa, Kigali */}
+            <div className="mt-4 relative aspect-[16/10] overflow-hidden rounded-2xl border border-line shadow-soft">
+              <iframe
+                title="Green Logistics Rwanda — Magerwa, Kigali"
+                src="https://www.google.com/maps?q=Magerwa%2C%20Kigali%2C%20Rwanda&output=embed"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="absolute inset-0 h-full w-full border-0"
+              />
             </div>
           </div>
 

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "Green Logistics Rwanda is a premier logistics company in Magerwa, Kigali — moving Rwanda's goods with precision, professionalism, and care.",
+  alternates: { canonical: "/about" },
 };
 
 const VALUES = [
@@ -23,6 +24,13 @@ const TEAM = ["Operations Lead", "Customs Specialist", "Fleet Manager", "Client 
 
 export default async function AboutPage() {
   const settings = await getSettings();
+  const team = [1, 2, 3, 4]
+    .map((n, i) => ({
+      photo: settings[`team_${n}`],
+      name: settings[`team_${n}_name`],
+      role: settings[`team_${n}_role`] || TEAM[i],
+    }))
+    .filter((m) => m.photo);
   return (
     <>
       <PageHero
@@ -50,7 +58,7 @@ export default async function AboutPage() {
                           Our operations
                         </p>
                         <p className="mt-1 text-sm text-white/50">
-                          Image placeholder · team / facility
+                          Magerwa, Kigali · Rwanda
                         </p>
                       </div>
                     </div>
@@ -188,66 +196,59 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Team placeholder */}
-      <section className="bg-white py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <Reveal className="max-w-xl">
-            <span className="font-mono text-xs font-medium uppercase tracking-[0.22em] text-brand">
-              The team
-            </span>
-            <h2 className="font-display mt-4 text-3xl font-bold text-ink sm:text-4xl">
-              The people who move your cargo.
-            </h2>
-            <p className="mt-3 text-ash">
-              Photos &amp; names are placeholders — ready to swap in the real
-              team.
-            </p>
-          </Reveal>
-          <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {TEAM.map((role, i) => {
-              const n = i + 1;
-              const name = settings[`team_${n}_name`] || "Team Member";
-              const roleText = settings[`team_${n}_role`] || role;
-              return (
-                <RevealItem key={n}>
+      {/* Team — only rendered once real members are added in admin */}
+      {team.length > 0 && (
+        <section className="bg-white py-20 sm:py-24">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <Reveal className="max-w-xl">
+              <span className="font-mono text-xs font-medium uppercase tracking-[0.22em] text-brand">
+                The team
+              </span>
+              <h2 className="font-display mt-4 text-3xl font-bold text-ink sm:text-4xl">
+                The people who move your cargo.
+              </h2>
+            </Reveal>
+            <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {team.map((m, i) => (
+                <RevealItem key={i}>
                   <div className="overflow-hidden rounded-2xl border border-line bg-paper shadow-soft">
                     <div className="relative aspect-square bg-brand-ink">
                       <SlotImage
-                        src={settings[`team_${n}`]}
-                        alt={name}
+                        src={m.photo}
+                        alt={m.name || m.role}
                         fallback={
                           <>
                             <div className="mesh-green grain absolute inset-0" />
                             <div className="absolute inset-0 grid place-items-center">
                               <Users className="h-10 w-10 text-white/60" />
                             </div>
-                            <span className="absolute bottom-3 right-3 font-mono text-[10px] text-white/40">
-                              photo {n}
-                            </span>
                           </>
                         }
                       />
                     </div>
                     <div className="p-5">
-                      <p className="font-display font-bold text-ink">{name}</p>
-                      <p className="text-sm text-brand">{roleText}</p>
+                      <p className="font-display font-bold text-ink">
+                        {m.name || "Team Member"}
+                      </p>
+                      <p className="text-sm text-brand">{m.role}</p>
                     </div>
                   </div>
                 </RevealItem>
-              );
-            })}
-          </RevealGroup>
+              ))}
+            </RevealGroup>
+          </div>
+        </section>
+      )}
 
-          <Reveal>
-            <div className="mt-12 text-center">
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 rounded-full bg-brand-bright px-7 py-4 text-base font-semibold text-white shadow-glow transition-transform duration-200 hover:scale-[1.03] active:scale-95"
-              >
-                Work with us
-              </Link>
-            </div>
-          </Reveal>
+      {/* Work-with-us CTA */}
+      <section className="bg-white pb-20 sm:pb-24">
+        <div className="mx-auto max-w-7xl px-5 text-center sm:px-8">
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-bright px-7 py-4 text-base font-semibold text-white shadow-glow transition-transform duration-200 hover:scale-[1.03] active:scale-95"
+          >
+            Work with us
+          </Link>
         </div>
       </section>
     </>
