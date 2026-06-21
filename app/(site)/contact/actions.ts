@@ -104,10 +104,17 @@ export async function submitQuote(
 
   if (!emailed) {
     try {
+      // Form-encoded (not JSON) — the format Formspree accepts on all forms.
+      const params = new URLSearchParams();
+      params.set("_subject", `New quote request — ${data.name}`);
+      for (const [k, v] of Object.entries(data)) if (v) params.set(k, v);
       const res = await fetch(SITE.formspree, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ _subject: `New quote request — ${data.name}`, ...data }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+        },
+        body: params.toString(),
       });
       emailed = res.ok;
     } catch (e) {
