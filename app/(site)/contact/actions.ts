@@ -65,24 +65,54 @@ export async function submitQuote(
     }
   }
 
-  // 2) Email notification via Formspree (the inbox ping)
-  try {
-    const res = await fetch(SITE.formspree, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        _subject: `New quote request — ${data.name}`,
-        ...data,
-      }),
-    });
-    if (!res.ok) throw new Error(`Formspree ${res.status}`);
-  } catch (e) {
-    console.error("Formspree submit failed:", e);
-    return {
-      ok: false,
-      message:
-        "Something went wrong sending your request. Please WhatsApp us or try again.",
-    };
+  // 2) Email notification — Resend (preferred, from our own domain) with
+  //    Formspree as fallback. Best-effort: the lead is already saved in the
+  //    database (admin dashboard), so we never block the user on email.
+  const summary = [
+    `New quote request from ${data.name}`,
+    "",
+    `Phone:       ${data.phone || "—"}`,
+    `Email:       ${data.email || "—"}`,
+    `Service:     ${data.service || "—"}`,
+    `Cargo:       ${data.cargo_type || "—"}`,
+    `Route:       ${data.origin || "—"} → ${data.destination || "—"}`,
+    `Weight (kg): ${data.weight_kg || "—"}`,
+    "",
+    `Message:`,
+    data.message || "—",
+  ].join("\n");
+
+  let emailed = false;
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const { Resend } = await import("resend");
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const { error } = await resend.emails.send({
+        from: process.env.QUOTE_FROM || "Green Logistics <onboarding@resend.dev>",
+        to: process.env.QUOTE_NOTIFY_EMAIL || SITE.email,
+        replyTo: data.email || undefined,
+        subject: `New quote request — ${data.name}`,
+        text: summary,
+      });
+      if (error) throw error;
+      emailed = true;
+    } catch (e) {
+      console.error("Resend failed:", e);
+    }
+  }
+
+  if (!emailed) {
+    try {
+      const res = await fetch(SITE.formspree, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ _subject: `New quote request — ${data.name}`, ...data }),
+      });
+      emailed = res.ok;
+    } catch (e) {
+      console.error("Formspree submit failed:", e);
+    }
   }
 
   return {
