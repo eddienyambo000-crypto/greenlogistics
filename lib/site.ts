@@ -13,7 +13,7 @@ export const SITE = {
   hours: "Mon–Sat: 8:00 AM – 6:00 PM",
   whatsappMsg:
     "Hello Green Logistics Rwanda 👋 I'd like to get a quote for a shipment.",
-  formspree: "https://formspree.io/f/xwvjwgrj",
+  formspree: "https://formspree.io/f/xykqgqvz",
   developer: {
     name: "EDDIE NYAMBO",
     url: "https://eddie-portfolio-gamma.vercel.app/",
